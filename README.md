@@ -1,2 +1,2 @@
 # DjangoBookHub
- dynamic Django app for efficient bookstore management
+## dynamic Django app for efficient bookstore management
