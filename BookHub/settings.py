@@ -12,7 +12,9 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 import os
 from pathlib import Path
-
+import cloudinary
+import cloudinary.uploader
+import cloudinary.api
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -38,7 +40,9 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'BookManager.apps.BookmanagerConfig'
+    'crispy_forms',
+    'BookManager.apps.BookmanagerConfig',
+    'cloudinary',
 ]
 
 MIDDLEWARE = [
@@ -70,11 +74,32 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'BookHub.wsgi.application'
+CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
+# adding cloudinary config
+cloudinary.config( 
+    cloud_name = "dpjjol9lx", 
+    api_key = "618117849888596", 
+    api_secret = "s9BpFkbx0igyX80P1B0_F4x62Zo" 
+)
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
-
+"""
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'bookhub',
+        'USER': 'root',
+        'PASSWORD': '',
+        'HOST': '127.0.0.1',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        }        
+    }
+}
+"""
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
