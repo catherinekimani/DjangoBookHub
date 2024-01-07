@@ -40,7 +40,7 @@ def signin(request):
     return render(request, 'signin.html')
 
 """
-function for handling user signout
+function handling user signout
 """
 def signout(request):
     logout(request)
