@@ -1,0 +1,29 @@
+{% load static %}
+	<link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
+		<nav>
+			<a href="" class="logo"><span>B</span>ook<span>B</span>reeze</a>
+			<div class="search-form">
+				<input type="text" class="search-input" placeholder="Search...">
+				<button class="search-btn">Search</button>
+			</div>
+		{% if request.user.is_authenticated %}
+		<li class="dropdown profile"><a href="#">{{ request.user.username }}</a>
+			<ul role="menu" class="sub-menu">
+				<li><a href=""><i class="fa fa-shopping-cart"></i> My order</a></li>
+				<li><a href="{% url 'BookManager:signout' %}"><i class="fa fa-sign-out"></i> Logout</a></li>
+			</ul>
+		</li>
+		<li class="cart">
+			<a href="">Cart <i class="fa fa-angle-left"></i>
+				<span class="totalcart" id="gettotalcart"> {{ cart|length }} </span>
+				<i class="fa fa-angle-right"></i>
+			</a>
+		</li>
+		<!-- not authenticate -->
+		{% else %}
+			<div class="user-links">
+				<a href="{% url 'BookManager:signin' %}" class="sign-in">Sign In</a>
+				<a href="#" class="cart">Cart</a>
+			</div>
+	{% endif %}
+		</nav>
