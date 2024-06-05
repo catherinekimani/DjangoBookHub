@@ -4,14 +4,13 @@ from django.contrib.auth.models import User
 from crispy_forms.helper import FormHelper
 
 class SignUpForm(UserCreationForm):
-    name = forms.CharField(required=True)
+    username = forms.CharField(required=True)
     email = forms.CharField(required=True)
 
     class Meta:
         model = User
 
         fields = [
-			'name',
             'email',
             'username',
             'password1',
@@ -20,7 +19,7 @@ class SignUpForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super(SignUpForm, self).save(commit=False)
-        user.first_name = self.changed_data=['name']
+        user.username = self.changed_data=['username']
         user.email = self.cleaned_data['email']
 
         if commit:
