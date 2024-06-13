@@ -1,28 +1,28 @@
 from django import forms
 from django.contrib.auth.forms import UserCreationForm
-from django.contrib.auth.models import User
-from crispy_forms.helper import FormHelper
+from django.contrib.auth import get_user_model
+from .models import UserProfile
 
 class SignUpForm(UserCreationForm):
-    username = forms.CharField(required=True)
-    email = forms.CharField(required=True)
+    email = forms.EmailField(required=True)
 
     class Meta:
-        model = User
+        model = get_user_model()
+        fields = ('email', 'username', 'password1', 'password2')
 
-        fields = [
-            'email',
-            'username',
-            'password1',
-            'password2'
-		]
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['username'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter Your Username'})
+        self.fields['email'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter Your Email'})
+        self.fields['password1'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Enter Your Password'})
+        self.fields['password2'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Confirm Password'})
 
-    def save(self, commit=True):
-        user = super(SignUpForm, self).save(commit=False)
-        user.username = self.changed_data=['username']
-        user.email = self.cleaned_data['email']
+class UserProfileForm(forms.ModelForm):
+    class Meta:
+        model = UserProfile
+        fields = ['avatar', 'bio', 'favorite_books', 'purchased_books', 'books_read']
 
-        if commit:
-            user.save()
-
-        return user
+class UpdateProfileForm(forms.ModelForm):
+    class Meta:
+        model = get_user_model()
+        fields = ['username', 'email']
