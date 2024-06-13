@@ -45,3 +45,16 @@ class Book(models.Model):
 	updated = models.DateTimeField(auto_now=True)
 	def __str__(self):
 		return self.name
+
+class UserProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='profile')
+    avatar = CloudinaryField('profile_pic')
+    bio = models.TextField(blank=True)
+    favorite_books = models.ManyToManyField(Book, related_name='favorited_by', blank=True)
+    purchased_books = models.ManyToManyField(Book, related_name='purchased_by', blank=True)
+    books_read = models.ManyToManyField(Book, related_name='read_by', blank=True)
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.user.username}'s profile"
