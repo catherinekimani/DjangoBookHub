@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container-fluid mt-4">
+	<h1 class="mb-2">Search</h1>
+	{% if q %}
+	<p class="text-muted mb-2">Results for: <strong>{{ q }}</strong></p>
+	<p class="text-muted mb-4"><small>BookHub helps you track what you’re reading and keep notes. Reading happens in
+			Google Books preview, Kindle, or your physical copy.</small></p>
+	{% else %}
+	<p class="text-muted mb-4">Type a search above to find books.</p>
+	{% endif %}
+
+	<div class="row">
+		{% for book in books %}
+		<div class="col-md-4 mb-4">
+			<div class="card h-100">
+				{% if book.cover_image %}
+				<a href="{% url 'BookManager:book_detail' book.id %}">
+					<img src="{{ book.cover_image }}" class="card-img-top" alt="{{ book.title }} cover" loading="lazy"
+						style="height: 220px; width: 100%; object-fit: cover; cursor: pointer;">
+				</a>
+				{% endif %}
+				<div class="card-body">
+					<h5 class="card-title">
+						<a href="{% url 'BookManager:book_detail' book.id %}" class="text-decoration-none">{{ book.title }}</a>
+					</h5>
+					{% if book.authors %}
+					<p class="text-muted"><strong>Authors:</strong> {{ book.authors }}</p>
+					{% endif %}
+					{% if book.description %}
+					<p class="card-text">{{ book.description|truncatewords:30 }}</p>
+					{% endif %}
+					{% if book.published_date %}
+					<p class="text-muted"><small>Published: {{ book.published_date }}</small></p>
+					{% endif %}
+				</div>
+				<div class="card-footer">
+					{% if book.info_link %}
+					<a href="{{ book.info_link }}" class="btn btn-primary btn-sm" target="_blank" rel="noopener noreferrer">View
+						on Google Books</a>
+					{% endif %}
+					{% if book.preview_link %}
+					<a href="{{ book.preview_link }}" class="btn btn-secondary btn-sm" target="_blank"
+						rel="noopener noreferrer">Preview</a>
+					{% endif %}
+					{% if user.is_authenticated %}
+					<button class="btn btn-outline-danger btn-sm toggle-favorite" data-book-id="{{ book.id }}">
+						<span class="favorite-icon">♡</span> Favorite
+					</button>
+					{% endif %}
+				</div>
+			</div>
+		</div>
+		{% empty %}
+		<div class="col-12">
+			{% if q %}
+			<p class="text-center">No books found for <strong>{{ q }}</strong>.</p>
+			{% else %}
+			<p class="text-center">Search for something like “negotiation”, “python”, or “habit building”.</p>
+			{% endif %}
+		</div>
+		{% endfor %}
+	</div>
+</div>
+{% if user.is_authenticated %}
+<script type="module" src="{% static 'js/book-interactions.js' %}"></script>
+{% endif %}
+{% endblock %}

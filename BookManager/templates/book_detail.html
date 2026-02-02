@@ -1,0 +1,206 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-4 mb-4">
+            <div class="card">
+                {% if book.cover_image %}
+                <img src="{{ book.cover_image }}" class="card-img-top" alt="{{ book.title }} cover" loading="lazy"
+                    style="height: 320px; width: 100%; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                    style="height: 320px;">
+                    <i class="fas fa-book fa-5x text-muted"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    {% if user.is_authenticated %}
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-danger toggle-favorite" data-book-id="{{ book.id }}">
+                            <span class="favorite-icon">{% if is_favorite %}♥{% else %}♡{% endif %}</span>
+                            {% if is_favorite %}Remove from Favorites{% else %}Add to Favorites{% endif %}
+                        </button>
+                        <button class="btn btn-outline-primary toggle-reading-list" data-book-id="{{ book.id }}">
+                            <i class="fas fa-bookmark"></i>
+                            {% if in_reading_list %}Remove from Reading List{% else %}Add to Reading List{% endif %}
+                        </button>
+                        <button class="btn btn-outline-success toggle-read-status" data-book-id="{{ book.id }}">
+                            <i class="fas fa-check"></i>
+                            {% if is_read %}Mark as Unread{% else %}Mark as Read{% endif %}
+                        </button>
+                        <a href="{% url 'BookManager:add_reading_note' book.id %}" class="btn btn-primary">
+                            <i class="fas fa-sticky-note"></i> Add Note
+                        </a>
+                        {% if user.is_staff %}
+                        <hr>
+                        <button class="btn btn-warning toggle-featured-detail" data-book-id="{{ book.id }}">
+                            <i class="bi bi-star{% if book.is_featured %}-fill{% endif %}"></i>
+                            {% if book.is_featured %}Unfeature Book{% else %}Feature Book{% endif %}
+                        </button>
+                        {% endif %}
+                    </div>
+                    {% else %}
+                    <p class="text-center">
+                        <a href="{% url 'BookManager:signin' %}" class="btn btn-primary">Sign in to interact with this
+                            book</a>
+                    </p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <h1 class="mb-3">{{ book.title }}</h1>
+
+            <div class="alert alert-light border mb-3">
+                <strong>Reading note:</strong> BookHub doesn’t host full books. Use the preview / store links to read
+                elsewhere (Google Books preview, Kindle, or a physical copy), then come back here to track status and
+                capture notes.
+            </div>
+
+            {% if book.authors %}
+            <p class="lead">
+                <strong>Authors:</strong> {{ book.authors }}
+            </p>
+            {% endif %}
+
+            {% if book.published_date %}
+            <p><strong>Published:</strong> {{ book.published_date }}</p>
+            {% endif %}
+
+            {% if book.page_count %}
+            <p><strong>Pages:</strong> {{ book.page_count }}</p>
+            {% endif %}
+
+            {% if book.categories %}
+            <p><strong>Categories:</strong> {{ book.categories }}</p>
+            {% endif %}
+
+            <div class="mb-3">
+                {% if book.info_link %}
+                <a href="{{ book.info_link }}" class="btn btn-primary" target="_blank">
+                    <i class="fas fa-external-link-alt"></i> View on Google Books
+                </a>
+                {% endif %}
+                {% if book.preview_link %}
+                <a href="{{ book.preview_link }}" class="btn btn-secondary" target="_blank">
+                    <i class="fas fa-eye"></i> Preview
+                </a>
+                {% endif %}
+            </div>
+
+            {% if preview_embed_url %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-1">Read a preview</h5>
+                    <p class="mb-0 small text-muted">
+                        This is a Google Books preview, not the full book. Some pages may be limited based on the
+                        publisher’s settings.
+                    </p>
+                </div>
+                <div class="card-body" style="height: 480px;">
+                    <iframe src="{{ preview_embed_url }}" title="Google Books preview for {{ book.title }}" width="100%"
+                        height="100%" style="border: 0;" loading="lazy" allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            {% else %}
+            <div class="card mb-4">
+                <div class="card-body">
+                    <p class="mb-1 text-muted">Preview isn’t available for this book.</p>
+                    <p class="mb-0 text-muted small">
+                        You can still add it to your reading list here in BookHub and read it on Google Books, Kindle,
+                        or in a physical copy.
+                    </p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if book.description %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Description</h5>
+                </div>
+                <div class="card-body">
+                    <p>{{ book.description|linebreaks }}</p>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if user.is_authenticated and user_notes %}
+            <div class="card mb-4">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">Your Notes</h5>
+                    <a href="{% url 'BookManager:add_reading_note' book.id %}" class="btn btn-sm btn-primary">
+                        <i class="fas fa-plus"></i> Add Note
+                    </a>
+                </div>
+                <div class="card-body">
+                    {% for note in user_notes %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <small class="text-muted">{{ note.created|date:"F d, Y" }}</small>
+                            <div>
+                                <a href="{% url 'BookManager:edit_reading_note' note.id %}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                                <a href="{% url 'BookManager:delete_reading_note' note.id %}"
+                                    class="btn btn-sm btn-outline-danger">
+                                    <i class="fas fa-trash"></i> Delete
+                                </a>
+                            </div>
+                        </div>
+                        <p>{{ note.note|linebreaks }}</p>
+                        {% if note.is_public %}
+                        <span class="badge bg-info"><i class="fas fa-globe"></i> Public</span>
+                        {% else %}
+                        <span class="badge bg-secondary"><i class="fas fa-lock"></i> Private</span>
+                        {% endif %}
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% elif user.is_authenticated %}
+            <div class="card mb-4">
+                <div class="card-body text-center">
+                    <p class="text-muted">You haven't added any notes yet.</p>
+                    <a href="{% url 'BookManager:add_reading_note' book.id %}" class="btn btn-primary">
+                        <i class="fas fa-sticky-note"></i> Add Your First Note
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+
+            {% if public_notes %}
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Community Notes</h5>
+                </div>
+                <div class="card-body">
+                    {% for note in public_notes %}
+                    <div class="border-bottom pb-3 mb-3">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <div>
+                                <strong>{{ note.user.username }}</strong>
+                                <small class="text-muted"> - {{ note.created|date:"F d, Y" }}</small>
+                            </div>
+                            <span class="badge bg-info"><i class="fas fa-globe"></i> Public</span>
+                        </div>
+                        <p>{{ note.note|linebreaks }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+{% if user.is_authenticated %}
+<script type="module" src="{% static 'js/book-interactions.js' %}"></script>
+{% endif %}
+
+{% endblock %}
