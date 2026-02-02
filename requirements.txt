@@ -1,5 +1,17 @@
 asgiref==3.7.2
+certifi==2025.6.15
+charset-normalizer==3.4.2
+cloudinary==1.44.1
 Django==5.0
 django-crispy-forms==2.1
+django-crontab==0.7.1
+django-extensions==4.1
+dnspython==2.8.0
+idna==3.10
+python-dotenv==1.1.0
+requests==2.32.4
+six==1.17.0
 sqlparse==0.4.4
 typing_extensions==4.8.0
+urllib3==2.5.0
+whitenoise==6.9.0
