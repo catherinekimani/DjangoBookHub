@@ -1,0 +1,32 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/resend_otp.css' %}">
+
+<div class="form-container">
+<div class="container">
+<img src="https://t4.ftcdn.net/jpg/04/48/56/43/240_F_448564364_aGJWzVDsXEX7rsalXb4ufPRXOgnrgF2n.jpg"
+				alt="forgot-password">
+<h1>Resend OTP</h1>
+<p>Enter your email and we'll send you a new OTP.</p>
+	<div class="messages">
+		{% if messages %}
+		<ul class="messages">
+			{% for message in messages %}
+			<li>{{ message }}</li>
+			{% endfor %}
+		</ul>
+		{% endif %}
+	</div>
+<form action="" method="POST">
+	{% csrf_token %}
+		<div class="form-group">
+			<label for="email"></label>
+			<input type="email" class="form-control" name="email_otp" placeholder="Enter Email Address">
+			{% if form.email_otp.errors %}
+			<span class="text-danger">{{ form.email_otp.errors }}</span>
+			{% endif %}
+		</div>
+		<button type="submit">Resend OTP</button>
+</form>
+</div>
+</div>

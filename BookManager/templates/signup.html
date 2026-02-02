@@ -1,0 +1,112 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Sign Up - BookHub{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/auth.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+	<div class="row justify-content-center" style="min-height: 80vh; align-items: center;">
+		<div class="col-md-6 col-lg-5">
+			<div class="card shadow-lg border-0" style="border-radius: 16px;">
+				<div class="card-body p-5">
+					<div class="text-center mb-4">
+						<div class="bg-primary text-white rounded-circle d-inline-flex align-items-center justify-content-center"
+							style="width: 90px; height: 90px;">
+							<i class="bi bi-book fs-1"></i>
+						</div>
+					</div>
+
+					<h2 class="text-center fw-bold mb-2">Join BookHub</h2>
+					<p class="text-center text-muted mb-4">Start tracking your reading journey</p>
+
+					<form method="POST" novalidate>
+						{% csrf_token %}
+
+						<div class="mb-3">
+							<label for="id_email" class="form-label fw-semibold">Email</label>
+							{{ form.email }}
+							{% if form.email.help_text %}
+							<small class="form-text text-muted d-block mt-1">{{ form.email.help_text }}</small>
+							{% endif %}
+							{% if form.email.errors %}
+							<div class="alert alert-danger mt-2 py-2 px-3" role="alert">
+								<i class="bi bi-exclamation-circle-fill me-2"></i>
+								{% for error in form.email.errors %}
+								{{ error }}
+								{% endfor %}
+							</div>
+							{% endif %}
+						</div>
+
+						<div class="mb-3">
+							<label for="id_username" class="form-label fw-semibold">Username</label>
+							{{ form.username }}
+							{% if form.username.help_text %}
+							<small class="form-text text-muted d-block mt-1">{{ form.username.help_text }}</small>
+							{% endif %}
+							{% if form.username.errors %}
+							<div class="alert alert-danger mt-2 py-2 px-3" role="alert">
+								<i class="bi bi-exclamation-circle-fill me-2"></i>
+								{% for error in form.username.errors %}
+								{{ error }}
+								{% endfor %}
+							</div>
+							{% endif %}
+						</div>
+
+						<div class="mb-3">
+							<label for="id_password1" class="form-label fw-semibold">Password</label>
+							{{ form.password1 }}
+							{% if form.password1.help_text %}
+							<small class="form-text text-muted d-block mt-1">{{ form.password1.help_text }}</small>
+							{% endif %}
+							{% if form.password1.errors %}
+							<div class="alert alert-danger mt-2 py-2 px-3" role="alert">
+								<i class="bi bi-exclamation-circle-fill me-2"></i>
+								{% for error in form.password1.errors %}
+								{{ error }}
+								{% endfor %}
+							</div>
+							{% endif %}
+						</div>
+
+						<div class="mb-4">
+							<label for="id_password2" class="form-label fw-semibold">Confirm Password</label>
+							{{ form.password2 }}
+							{% if form.password2.help_text %}
+							<small class="form-text text-muted d-block mt-1">{{ form.password2.help_text }}</small>
+							{% endif %}
+							{% if form.password2.errors %}
+							<div class="alert alert-danger mt-2 py-2 px-3" role="alert">
+								<i class="bi bi-exclamation-circle-fill me-2"></i>
+								{% for error in form.password2.errors %}
+								{{ error }}
+								{% endfor %}
+							</div>
+							{% endif %}
+						</div>
+
+						<button type="submit" class="btn btn-primary w-100 py-3 fw-semibold mb-4"
+							style="border-radius: 8px; font-size: 1.05rem;">
+							Create Account
+						</button>
+
+						<p class="text-center text-muted mb-0">
+							Already have an account?
+							<a href="{% url 'BookManager:signin' %}" class="text-primary text-decoration-none fw-semibold">Sign In</a>
+						</p>
+					</form>
+				</div>
+			</div>
+
+			<p class="text-center text-muted small mt-4">
+				By signing up, you agree to keep your reading notes private unless you choose to share them.
+			</p>
+		</div>
+	</div>
+</div>
+{% endblock %}

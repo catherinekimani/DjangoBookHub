@@ -1,0 +1,32 @@
+{% load static %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'css/verify_email.css' %}">
+
+<div class="form-container">
+<div class="container">
+<img src="https://t4.ftcdn.net/jpg/04/48/56/43/240_F_448564364_aGJWzVDsXEX7rsalXb4ufPRXOgnrgF2n.jpg"
+alt="verify-email">
+<h1>Verify Email</h1>
+<p class="p">Enter the OTP sent to your email address.</p>
+<div class="messages">
+	{% if messages %}
+	<ul class="messages">
+		{% for message in messages %}
+		<li>{{ message }}</li>
+		{% endfor %}
+	</ul>
+	{% endif %}
+</div>
+<form action="" method="POST" class="email-verification-form">
+	{% csrf_token %}
+		<div class="form-group">
+			<input class="form-control" name="otp_code" placeholder="Enter OTP">
+			{% if form.otp_code.errors %}
+			<span class="text-danger">{{ form.otp_code.errors }}</span>
+			{% endif %}
+		</div>
+		<button type="submit" class="btn btn-primary">Verify Email</button>
+		<p>Need new OPT? <a href="{% url 'BookManager:resend_otp' %}"> Resend OTP</a></p>
+</form>
+</div>
+</div>
