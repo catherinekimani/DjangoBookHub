@@ -1,0 +1,224 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Admin Dashboard - BookHub{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+	<div class="d-flex justify-content-between align-items-center mb-4">
+		<div>
+			<h1 class="h3 mb-1">
+				<i class="bi bi-speedometer2 text-primary"></i> Admin Dashboard
+			</h1>
+			<p class="text-muted">Manage and monitor BookHub</p>
+		</div>
+		<a href="/admin/" target="_blank" class="btn btn-outline-primary">
+			<i class="bi bi-gear"></i> Django Admin
+		</a>
+	</div>
+
+	<div class="row g-3 mb-4">
+		<div class="col-md-6 col-lg-3">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-center">
+						<div>
+							<p class="text-muted mb-1 small">Total Users</p>
+							<h3 class="mb-0">{{ total_users }}</h3>
+						</div>
+						<div class="bg-primary bg-opacity-10 rounded-circle p-3">
+							<i class="bi bi-people fs-4 text-primary"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-6 col-lg-3">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-center">
+						<div>
+							<p class="text-muted mb-1 small">Total Books</p>
+							<h3 class="mb-0">{{ total_books }}</h3>
+						</div>
+						<div class="bg-success bg-opacity-10 rounded-circle p-3">
+							<i class="bi bi-book fs-4 text-success"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-6 col-lg-3">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-center">
+						<div>
+							<p class="text-muted mb-1 small">Total Notes</p>
+							<h3 class="mb-0">{{ total_notes }}</h3>
+						</div>
+						<div class="bg-info bg-opacity-10 rounded-circle p-3">
+							<i class="bi bi-journal-text fs-4 text-info"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-md-6 col-lg-3">
+			<div class="card border-0 shadow-sm">
+				<div class="card-body">
+					<div class="d-flex justify-content-between align-items-center">
+						<div>
+							<p class="text-muted mb-1 small">Featured Books</p>
+							<h3 class="mb-0">{{ featured_books }}</h3>
+						</div>
+						<div class="bg-warning bg-opacity-10 rounded-circle p-3">
+							<i class="bi bi-star fs-4 text-warning"></i>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<div class="row g-4">
+		<div class="col-lg-6">
+			<div class="card border-0 shadow-sm">
+				<div class="card-header bg-white border-bottom">
+					<h5 class="mb-0"><i class="bi bi-fire text-danger"></i> Popular Books</h5>
+				</div>
+				<div class="card-body p-0">
+					<div class="list-group list-group-flush">
+						{% for book in popular_books %}
+						<div class="list-group-item">
+							<div class="d-flex gap-3 align-items-center">
+								{% if book.cover_image %}
+								<img src="{{ book.cover_image }}" alt="{{ book.title }}"
+									style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+								{% endif %}
+								<div class="flex-grow-1">
+									<a href="{% url 'BookManager:book_detail' book.id %}"
+										class="text-decoration-none text-dark fw-semibold">
+										{{ book.title|truncatewords:8 }}
+									</a>
+									<br>
+									<small class="text-muted">{{ book.view_count }} views</small>
+								</div>
+								<button
+									class="btn btn-sm toggle-featured {% if book.is_featured %}btn-warning{% else %}btn-outline-secondary{% endif %}"
+									data-book-id="{{ book.id }}">
+									<i class="bi bi-star{% if book.is_featured %}-fill{% endif %}"></i>
+								</button>
+							</div>
+						</div>
+						{% empty %}
+						<div class="list-group-item text-center text-muted py-4">
+							No books yet
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="card border-0 shadow-sm">
+				<div class="card-header bg-white border-bottom">
+					<h5 class="mb-0"><i class="bi bi-chat-left-text text-primary"></i> Recent Notes</h5>
+				</div>
+				<div class="card-body p-0">
+					<div class="list-group list-group-flush">
+						{% for note in recent_notes %}
+						<div class="list-group-item">
+							<div class="d-flex justify-content-between align-items-start mb-1">
+								<strong class="small">{{ note.user.username }}</strong>
+								<small class="text-muted">{{ note.created|timesince }} ago</small>
+							</div>
+							<p class="mb-1 small">{{ note.note|truncatewords:15 }}</p>
+							<small class="text-muted">on <a href="{% url 'BookManager:book_detail' note.book.id %}"
+									class="text-decoration-none">{{ note.book.title|truncatewords:5 }}</a></small>
+							{% if note.is_public %}
+							<span class="badge bg-info ms-2">Public</span>
+							{% endif %}
+						</div>
+						{% empty %}
+						<div class="list-group-item text-center text-muted py-4">
+							No notes yet
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="card border-0 shadow-sm">
+				<div class="card-header bg-white border-bottom">
+					<h5 class="mb-0"><i class="bi bi-person-plus text-success"></i> Recent Users</h5>
+				</div>
+				<div class="card-body p-0">
+					<div class="list-group list-group-flush">
+						{% for user in recent_users %}
+						<div class="list-group-item">
+							<div class="d-flex justify-content-between align-items-center">
+								<div>
+									<strong>{{ user.username }}</strong>
+									<br>
+									<small class="text-muted">{{ user.email }}</small>
+								</div>
+								<small class="text-muted">{{ user.date_joined|timesince }} ago</small>
+							</div>
+						</div>
+						{% empty %}
+						<div class="list-group-item text-center text-muted py-4">
+							No users yet
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+
+		<div class="col-lg-6">
+			<div class="card border-0 shadow-sm">
+				<div class="card-header bg-white border-bottom">
+					<h5 class="mb-0"><i class="bi bi-lightbulb text-warning"></i> Suggested to Feature</h5>
+				</div>
+				<div class="card-body p-0">
+					<div class="list-group list-group-flush">
+						{% for book in suggested_books %}
+						<div class="list-group-item">
+							<div class="d-flex gap-3 align-items-center">
+								{% if book.cover_image %}
+								<img src="{{ book.cover_image }}" alt="{{ book.title }}"
+									style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+								{% endif %}
+								<div class="flex-grow-1">
+									<a href="{% url 'BookManager:book_detail' book.id %}"
+										class="text-decoration-none text-dark fw-semibold">
+										{{ book.title|truncatewords:8 }}
+									</a>
+									<br>
+									<small class="text-muted">{{ book.view_count }} views</small>
+								</div>
+								<button class="btn btn-sm btn-outline-warning toggle-featured" data-book-id="{{ book.id }}">
+									<i class="bi bi-star"></i> Feature
+								</button>
+							</div>
+						</div>
+						{% empty %}
+						<div class="list-group-item text-center text-muted py-4">
+							All popular books are featured
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="module" src="{% static 'js/admin-dashboard.js' %}"></script>
+{% endblock %}
