@@ -1,0 +1,31 @@
+.book-card {
+	transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.book-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 8px 16px var(--shadow-lg) !important;
+}
+
+.hover-card {
+	transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.hover-card:hover {
+	transform: translateY(-4px);
+	box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15) !important;
+}
+
+.card {
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+	border: none;
+}
+
+.card-header {
+	background-color: #f8f9fa;
+	border-bottom: 1px solid #dee2e6;
+}
+
+.toggle-favorite.active .favorite-icon {
+	color: #EF4444;
+}

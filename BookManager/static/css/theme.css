@@ -1,0 +1,188 @@
+:root {
+    /* Light Theme - Serene Slate & Indigo */
+    --primary-color: #4F46E5;
+    --primary-hover: #4338CA;
+    --primary-light: #6366F1;
+    --secondary-color: #64748B;
+    --secondary-light: #94A3B8;
+    --success-color: #10B981;
+    --success-hover: #059669;
+    --danger-color: #EF4444;
+    --warning-color: #F59E0B;
+    --info-color: #3B82F6;
+
+    --background: #F8FAFC;
+    --background-secondary: #F1F5F9;
+    --surface: #FFFFFF;
+    --surface-elevated: #FFFFFF;
+
+    --text-primary: #242837;
+    --text-secondary: #64748B;
+    --text-muted: #94A3B8;
+
+    --border-color: #E2E8F0;
+    --shadow: rgba(0, 0, 0, 0.1);
+    --shadow-lg: rgba(0, 0, 0, 0.15);
+}
+
+/* Dark Theme */
+[data-theme="dark"] {
+    --primary-color: #6366F1;
+    --primary-hover: #818CF8;
+    --primary-light: #818CF8;
+    --secondary-color: #94A3B8;
+    --secondary-light: #CBD5E1;
+    --success-color: #34D399;
+    --success-hover: #6EE7B7;
+    --danger-color: #F87171;
+    --warning-color: #FBBF24;
+    --info-color: #60A5FA;
+
+    --background: #1A1D29;
+    --background-secondary: #20232E;
+    --surface: #242837;
+    --surface-elevated: #2D3142;
+
+    --text-primary: #E2E8F0;
+    --text-secondary: #CBD5E1;
+    --text-muted: #94A3B8;
+
+    --border-color: #2D3142;
+    --shadow: rgba(0, 0, 0, 0.4);
+    --shadow-lg: rgba(0, 0, 0, 0.6);
+}
+
+* {
+    transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+}
+
+body {
+    background-color: var(--background) !important;
+    color: var(--text-primary);
+}
+
+.card {
+    background-color: var(--surface);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover);
+    border-color: var(--primary-hover);
+}
+
+.btn-success {
+    background-color: var(--success-color);
+    border-color: var(--success-color);
+}
+
+.btn-success:hover {
+    background-color: var(--success-hover);
+    border-color: var(--success-hover);
+}
+
+.btn-outline-secondary {
+    color: var(--text-secondary);
+    border-color: var(--border-color);
+}
+
+.btn-outline-secondary:hover {
+    background-color: var(--background-secondary);
+    color: var(--text-primary);
+}
+
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-muted {
+    color: var(--text-muted) !important;
+}
+
+.text-secondary {
+    color: var(--text-secondary) !important;
+}
+
+a {
+    color: var(--primary-color);
+}
+
+a:hover {
+    color: var(--primary-hover);
+}
+
+.badge.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.badge.bg-success {
+    background-color: var(--success-color) !important;
+}
+
+.badge.bg-secondary {
+    background-color: var(--secondary-color) !important;
+}
+
+.badge.bg-info {
+    background-color: var(--info-color) !important;
+}
+
+.shadow-sm {
+    box-shadow: 0 1px 2px 0 var(--shadow) !important;
+}
+
+.shadow {
+    box-shadow: 0 1px 3px 0 var(--shadow), 0 1px 2px 0 var(--shadow) !important;
+}
+
+.shadow-lg {
+    box-shadow: 0 10px 15px -3px var(--shadow-lg), 0 4px 6px -2px var(--shadow) !important;
+}
+
+.form-control {
+    background-color: var(--surface);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.form-control:focus {
+    background-color: var(--surface);
+    color: var(--text-primary);
+    border-color: var(--primary-color);
+}
+
+.alert {
+    background-color: var(--surface-elevated);
+    color: var(--text-primary);
+    border-color: var(--border-color);
+}
+
+.theme-toggle {
+    position: relative;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: var(--surface-elevated);
+    border: 1px solid var(--border-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.theme-toggle:hover {
+    background-color: var(--background-secondary);
+    transform: scale(1.05);
+}
+
+.theme-toggle i {
+    font-size: 1.2rem;
+    color: var(--text-primary);
+}
