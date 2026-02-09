@@ -1,0 +1,284 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+<div class="container mt-4">
+	{# A. Profile Header #}
+	<div class="card shadow-sm mb-4">
+		<div class="card-body">
+			<div class="row align-items-center">
+				<div class="col-auto">
+					{% if user.profile.avatar %}
+					<img src="{{ user.profile.avatar.url }}" alt="{{ user.username }}" class="rounded-circle"
+						style="width: 100px; height: 100px; object-fit: cover;">
+					{% else %}
+					<div class="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
+						style="width: 100px; height: 100px; font-size: 2rem;">
+						{{ user.username|first|upper }}
+					</div>
+					{% endif %}
+				</div>
+				<div class="col">
+					<h1 class="h3 mb-1">
+						{{ user.username }}
+						{% if user.is_staff %}
+						<span class="badge bg-warning text-dark ms-2">
+							<i class="bi bi-shield-check"></i> Admin
+						</span>
+						{% endif %}
+					</h1>
+					{% if user.profile.bio %}
+					<p class="text-muted mb-2">{{ user.profile.bio }}</p>
+					{% endif %}
+					<div class="d-flex gap-4 mt-3">
+						<div>
+							<strong class="d-block h4 mb-0">{{ books_read.count }}</strong>
+							<small class="text-muted">Books Read</small>
+						</div>
+						<div>
+							<strong class="d-block h4 mb-0">{{ notes_count }}</strong>
+							<small class="text-muted">Notes Written</small>
+						</div>
+						<div>
+							<strong class="d-block h4 mb-0">{{ reading_list.count }}</strong>
+							<small class="text-muted">In Reading List</small>
+						</div>
+					</div>
+				</div>
+				<div class="col-auto">
+					<a href="{% url 'BookManager:profile_edit' %}" class="btn btn-outline-primary">
+						<i class="bi bi-pencil"></i> Edit Profile
+					</a>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	{# B. Reading List (Primary Section) #}
+	<div class="mb-5" id="reading-list">
+		<h2 class="h4 mb-3">
+			Reading List
+			<span class="badge bg-primary">{{ reading_list.count }}</span>
+		</h2>
+
+		{% if reading_list %}
+		<div class="row g-3">
+			{% for book in reading_list %}
+			<div class="col-md-6 col-lg-4">
+				<div class="card h-100 shadow-sm">
+					<div class="row g-0 h-100">
+						<div class="col-4">
+							{% if book.cover_image %}
+							<img src="{{ book.cover_image }}" class="img-fluid h-100" alt="{{ book.title }}"
+								style="object-fit: cover; border-radius: 0.25rem 0 0 0.25rem;">
+							{% else %}
+							<div class="bg-light h-100 d-flex align-items-center justify-content-center">
+								<i class="bi bi-book text-muted fs-1"></i>
+							</div>
+							{% endif %}
+						</div>
+						<div class="col-8">
+							<div class="card-body p-3 d-flex flex-column">
+								<h6 class="card-title mb-1">
+									<a href="{% url 'BookManager:book_detail' book.id %}" class="text-decoration-none text-dark">
+										{{ book.title|truncatewords:6 }}
+									</a>
+								</h6>
+								{% if book.authors %}
+								<p class="text-muted small mb-2">{{ book.authors|truncatewords:3 }}</p>
+								{% endif %}
+
+								<div class="mt-auto">
+									<div class="d-flex flex-column gap-1">
+										<a href="{% url 'BookManager:book_detail' book.id %}" class="btn btn-sm btn-primary">
+											<i class="bi bi-book"></i> Preview
+										</a>
+										<a href="{% url 'BookManager:add_reading_note' book.id %}" class="btn btn-sm btn-success">
+											<i class="bi bi-pencil"></i> Add Note
+										</a>
+										<div class="d-flex gap-1">
+											<button class="btn btn-sm btn-outline-secondary flex-grow-1 toggle-read"
+												data-book-id="{{ book.id }}">
+												<i class="bi bi-check"></i> Read
+											</button>
+											<button class="btn btn-sm btn-outline-danger toggle-reading-list" data-book-id="{{ book.id }}"
+												title="Remove from list">
+												<i class="bi bi-x"></i>
+											</button>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+		<div class="card bg-light">
+			<div class="card-body text-center p-5">
+				<i class="bi bi-list-ul text-muted" style="font-size: 3rem;"></i>
+				<h5 class="mt-3 mb-2">Your reading list is empty</h5>
+				<p class="text-muted mb-3">Search for books and add them to your reading list to get started.</p>
+				<a href="{% url 'BookManager:search' %}" class="btn btn-primary">Search Books</a>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+
+	{# C. All Notes (Secondary Section) #}
+	<div class="mb-5">
+		<h2 class="h4 mb-3">
+			Your Notes
+			<span class="badge bg-secondary">{{ notes_count }}</span>
+		</h2>
+
+		{% if notes_by_book %}
+		<div class="accordion" id="notesAccordion">
+			{% for item in notes_by_book %}
+			<div class="accordion-item">
+				<h3 class="accordion-header" id="heading{{ forloop.counter }}">
+					<button class="accordion-button {% if not forloop.first %}collapsed{% endif %}" type="button"
+						data-bs-toggle="collapse" data-bs-target="#collapse{{ forloop.counter }}"
+						aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}"
+						aria-controls="collapse{{ forloop.counter }}">
+						<div class="d-flex align-items-center gap-3">
+							{% if item.book.cover_image %}
+							<img src="{{ item.book.cover_image }}" alt="{{ item.book.title }}"
+								style="width: 40px; height: 60px; object-fit: cover; border-radius: 4px;">
+							{% endif %}
+							<div>
+								<strong>{{ item.book.title }}</strong>
+								<br>
+								<small class="text-muted">{{ item.notes|length }} note{{ item.notes|length|pluralize }}</small>
+							</div>
+						</div>
+					</button>
+				</h3>
+				<div id="collapse{{ forloop.counter }}"
+					class="accordion-collapse collapse {% if forloop.first %}show{% endif %}"
+					aria-labelledby="heading{{ forloop.counter }}" data-bs-parent="#notesAccordion">
+					<div class="accordion-body">
+						{% for note in item.notes %}
+						<div class="card mb-3">
+							<div class="card-body">
+								<div class="d-flex justify-content-between align-items-start mb-2">
+									<div>
+										<small class="text-muted">{{ note.created|date:"M d, Y - g:i A" }}</small>
+										{% if note.is_public %}
+										<span class="badge bg-info ms-2">Public</span>
+										{% else %}
+										<span class="badge bg-secondary ms-2">Private</span>
+										{% endif %}
+									</div>
+									<div class="btn-group btn-group-sm">
+										<a href="{% url 'BookManager:edit_reading_note' note.id %}" class="btn btn-outline-primary"
+											title="Edit">
+											<i class="bi bi-pencil"></i>
+										</a>
+										<a href="{% url 'BookManager:delete_reading_note' note.id %}" class="btn btn-outline-danger"
+											title="Delete">
+											<i class="bi bi-trash"></i>
+										</a>
+									</div>
+								</div>
+								<p class="mb-0">{{ note.note }}</p>
+							</div>
+						</div>
+						{% endfor %}
+					</div>
+				</div>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+		<div class="card bg-light">
+			<div class="card-body text-center p-5">
+				<i class="bi bi-journal-text text-muted" style="font-size: 3rem;"></i>
+				<h5 class="mt-3 mb-2">No notes yet</h5>
+				<p class="text-muted mb-0">Start reading and capture your insights as you go.</p>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+
+	{# D. Books Read (Tertiary Section) #}
+	<div class="mb-5">
+		<h2 class="h4 mb-3">
+			Books You've Read
+			<span class="badge bg-success">{{ books_read.count }}</span>
+		</h2>
+
+		{% if books_read %}
+		<div class="row g-3">
+			{% for book in books_read %}
+			<div class="col-6 col-md-3 col-lg-2">
+				<a href="{% url 'BookManager:book_detail' book.id %}" class="text-decoration-none">
+					<div class="card h-100 shadow-sm hover-card">
+						{% if book.cover_image %}
+						<img src="{{ book.cover_image }}" class="card-img-top" alt="{{ book.title }}"
+							style="height: 200px; object-fit: cover;">
+						{% else %}
+						<div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+							<i class="bi bi-book text-muted fs-1"></i>
+						</div>
+						{% endif %}
+						<div class="card-body p-2">
+							<p class="small mb-0 text-dark" title="{{ book.title }}">{{ book.title|truncatewords:4 }}</p>
+						</div>
+					</div>
+				</a>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+		<div class="card bg-light">
+			<div class="card-body text-center p-4">
+				<p class="text-muted mb-0">No books marked as read yet.</p>
+			</div>
+		</div>
+		{% endif %}
+	</div>
+
+	{# E. Favorites (Collapsed) #}
+	<details class="mb-5">
+		<summary class="h5 mb-3" style="cursor: pointer;">
+			Favorite Books
+			<span class="badge bg-danger">{{ favorite_books.count }}</span>
+		</summary>
+
+		{% if favorite_books %}
+		<div class="row g-3 mt-2">
+			{% for book in favorite_books %}
+			<div class="col-6 col-md-3 col-lg-2">
+				<a href="{% url 'BookManager:book_detail' book.id %}" class="text-decoration-none">
+					<div class="card h-100 shadow-sm hover-card">
+						{% if book.cover_image %}
+						<img src="{{ book.cover_image }}" class="card-img-top" alt="{{ book.title }}"
+							style="height: 200px; object-fit: cover;">
+						{% else %}
+						<div class="bg-light d-flex align-items-center justify-content-center" style="height: 200px;">
+							<i class="bi bi-book text-muted fs-1"></i>
+						</div>
+						{% endif %}
+						<div class="card-body p-2">
+							<p class="small mb-0 text-dark" title="{{ book.title }}">{{ book.title|truncatewords:4 }}</p>
+						</div>
+					</div>
+				</a>
+			</div>
+			{% endfor %}
+		</div>
+		{% else %}
+		<div class="card bg-light mt-2">
+			<div class="card-body text-center p-4">
+				<p class="text-muted mb-0">No favorite books yet.</p>
+			</div>
+		</div>
+		{% endif %}
+	</details>
+</div>
+
+
+<script type="module" src="{% static 'js/book-interactions.js' %}"></script>
+{% endblock %}

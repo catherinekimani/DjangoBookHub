@@ -1,29 +1,52 @@
 {% load static %}
-	<link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
-		<nav>
-			<a href="" class="logo"><span>B</span>ook<span>B</span>reeze</a>
-			<div class="search-form">
-				<input type="text" class="search-input" placeholder="Search...">
-				<button class="search-btn">Search</button>
-			</div>
-		{% if request.user.is_authenticated %}
-		<li class="dropdown profile"><a href="#">{{ request.user.username }}</a>
+<link rel="stylesheet" type="text/css" href="{% static 'css/navbar.css' %}">
+
+<nav>
+	<a href="/" class="logo">
+		<div class="logo-icon">
+			<i class="fas fa-book-open"></i>
+		</div>
+		<span class="logo-text">BookHub</span>
+	</a>
+
+	{% if request.resolver_match.url_name != 'home' or user.is_authenticated %}
+	<form class="search-form" action="{% url 'BookManager:search' %}" method="get">
+		<input type="text" class="search-input" name="q" value="{{ request.GET.q }}"
+			placeholder="Search for books, authors, genres...">
+		<button class="search-btn" type="submit" aria-label="Search">
+			<i class="fas fa-search"></i>
+		</button>
+	</form>
+	{% endif %}
+
+	<!-- Theme Toggle Button -->
+	<button class="theme-toggle" onclick="toggleTheme()" aria-label="Toggle theme" title="Toggle dark/light mode">
+		<i id="theme-icon" class="bi bi-moon-fill"></i>
+	</button>
+
+	{% if request.user.is_authenticated %}
+	<ul class="user-nav">
+		<li class="dropdown profile">
+			<a href="#">
+				<i class="fas fa-user-circle"></i>
+				{{ request.user.username }}
+				<i class="fas fa-chevron-down"></i>
+			</a>
 			<ul role="menu" class="sub-menu">
-				<li><a href=""><i class="fa fa-shopping-cart"></i> My order</a></li>
-				<li><a href="{% url 'BookManager:signout' %}"><i class="fa fa-sign-out"></i> Logout</a></li>
+				<li><a href="{% url 'BookManager:profile' %}"><i class="fas fa-user"></i> Profile</a></li>
+				{% if request.user.is_staff %}
+				<li><a href="{% url 'BookManager:admin_dashboard' %}"><i class="fas fa-chart-line"></i> Dashboard</a></li>
+				<li><a href="/admin/" target="_blank"><i class="fas fa-cog"></i> Admin Panel</a></li>
+				{% endif %}
+				<li><a href="{% url 'BookManager:signout' %}"><i class="fas fa-sign-out-alt"></i> Logout</a></li>
 			</ul>
 		</li>
-		<li class="cart">
-			<a href="">Cart <i class="fa fa-angle-left"></i>
-				<span class="totalcart" id="gettotalcart"> {{ cart|length }} </span>
-				<i class="fa fa-angle-right"></i>
-			</a>
-		</li>
-		<!-- not authenticate -->
-		{% else %}
-			<div class="user-links">
-				<a href="{% url 'BookManager:signin' %}" class="sign-in">Sign In</a>
-				<a href="#" class="cart">Cart</a>
-			</div>
+	</ul>
+	{% else %}
+	<div class="user-links">
+		<a href="{% url 'BookManager:signin' %}" class="sign-in">
+			<i class="fas fa-sign-in-alt"></i> Sign In
+		</a>
+	</div>
 	{% endif %}
-		</nav>
+</nav>

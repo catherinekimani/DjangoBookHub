@@ -1,0 +1,21 @@
+input[type="file"] {
+	display: block;
+	width: 100%;
+	padding: 0.5rem;
+	border: 2px dashed #dee2e6;
+	border-radius: 0.375rem;
+	background-color: #f8f9fa;
+	cursor: pointer;
+	transition: all 0.2s;
+}
+
+input[type="file"]:hover {
+	border-color: #4F46E5;
+	background-color: #f8fafc;
+}
+
+input[type="file"]:focus {
+	outline: none;
+	border-color: #4F46E5;
+	box-shadow: 0 0 0 0.2rem rgba(79, 70, 229, 0.25);
+}

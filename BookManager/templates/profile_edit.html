@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/profile-edit.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5 mb-5">
+	<div class="row justify-content-center">
+		<div class="col-lg-8">
+			<div class="mb-4">
+				<h1 class="h2 mb-2">Edit Profile</h1>
+				<p class="text-muted">Update your profile information and avatar</p>
+			</div>
+
+			<div class="card shadow-sm border-0">
+				<div class="card-body p-4 p-md-5">
+					{% if messages %}
+					<div class="mb-4">
+						{% for message in messages %}
+						<div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+							{{ message }}
+							<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+						</div>
+						{% endfor %}
+					</div>
+					{% endif %}
+
+					<form method="POST" enctype="multipart/form-data" id="profileEditForm">
+						{% csrf_token %}
+
+						<div class="mb-4">
+							<label for="{{ form.avatar.id_for_label }}" class="form-label fw-semibold">
+								Profile Picture
+							</label>
+
+							<div class="d-flex align-items-center gap-4 mb-3">
+								<div class="position-relative">
+									{% if form.instance.avatar %}
+									<img src="{{ form.instance.avatar.url }}" alt="Current avatar" class="rounded-circle border"
+										style="width: 100px; height: 100px; object-fit: cover;" id="avatarPreview">
+									{% else %}
+									<div class="rounded-circle bg-light border d-flex align-items-center justify-content-center"
+										style="width: 100px; height: 100px;" id="avatarPreview">
+										<i class="bi bi-person-circle fs-1 text-muted"></i>
+									</div>
+									{% endif %}
+								</div>
+								<div class="flex-grow-1">
+									{{ form.avatar }}
+									<small class="form-text text-muted d-block mt-2">
+										<i class="bi bi-info-circle"></i> Recommended: Square image, at least 200x200px. Max 5MB.
+									</small>
+									{% if form.avatar.errors %}
+									<div class="text-danger small mt-1">
+										{{ form.avatar.errors }}
+									</div>
+									{% endif %}
+								</div>
+							</div>
+						</div>
+
+						<div class="mb-4">
+							<label for="{{ form.bio.id_for_label }}" class="form-label fw-semibold">
+								About You
+							</label>
+							{{ form.bio }}
+							<small class="form-text text-muted">
+								Tell others about yourself, your reading interests, or favorite genres.
+							</small>
+							{% if form.bio.errors %}
+							<div class="text-danger small mt-1">
+								{{ form.bio.errors }}
+							</div>
+							{% endif %}
+						</div>
+
+						<div class="d-flex gap-3 flex-wrap justify-content-between align-items-center pt-3 border-top">
+							<a href="{% url 'BookManager:profile' %}" class="btn btn-outline-secondary">
+								<i class="bi bi-arrow-left"></i> Back to Profile
+							</a>
+							<button type="submit" class="btn btn-primary btn-lg px-5">
+								<i class="bi bi-check-circle"></i> Save Changes
+							</button>
+						</div>
+					</form>
+				</div>
+			</div>
+
+			<div class="mt-4 text-center">
+				<small class="text-muted">
+					<i class="bi bi-shield-check"></i> Your information is private and will only be shown on your public profile.
+				</small>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script src="{% static 'js/profile-edit.js' %}"></script>
+{% endblock %}
