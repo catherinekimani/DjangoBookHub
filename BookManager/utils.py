@@ -20,7 +20,7 @@ def fetch_books(query='science fiction', max_results=10):
     Returns:
         dict: JSON response from API or None if request fails
     """
-    api_key = os.getenv('GOOGLE_BOOKS_API_KEY', settings.GOOGLE_BOOKS_API_KEY)
+    api_key = os.getenv('GOOGLE_BOOKS_API_KEY')
     url = (
         f"https://www.googleapis.com/books/v1/volumes"
         f"?q={query}&maxResults={max_results}&key={api_key}"
