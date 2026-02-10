@@ -2,12 +2,15 @@ asgiref==3.7.2
 certifi==2025.6.15
 charset-normalizer==3.4.2
 cloudinary==1.44.1
+dj-database-url==2.1.0
 Django==5.0
 django-crispy-forms==2.1
 django-crontab==0.7.1
 django-extensions==4.1
 dnspython==2.8.0
+gunicorn==21.2.0
 idna==3.10
+psycopg2-binary==2.9.9
 python-dotenv==1.1.0
 requests==2.32.4
 six==1.17.0
